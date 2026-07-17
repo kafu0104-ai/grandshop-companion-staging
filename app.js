@@ -90,11 +90,6 @@ function setupFilters() {
     return `<option value="princeCat:${cat.id}">${cat.name}（${info.character}）</option>`;
   }).join('');
 
-  const mascotOptions = PRODUCT_MASTER.mascots.map(mascot => {
-    const info = MASTER_INDEX.mascots.get(mascot.id);
-    return `<option value="mascot:${mascot.id}">${mascot.name}（${info.relatedCharacter}）</option>`;
-  }).join('');
-
   const reserved = new Set([
     ...PRODUCT_MASTER.units.flatMap(unit => unit.characters.flatMap(character => [character.name, character.shortName, ...(character.aliases || [])].map(normalizeMasterName))),
     ...PRODUCT_MASTER.princeCats.map(cat => normalizeMasterName(cat.name)),
@@ -111,7 +106,7 @@ function setupFilters() {
     '<option value="">全キャラクター・種類</option>' +
     unitGroups +
     `<optgroup label="PRINCE CAT">${catOptions}</optgroup>` +
-    `<optgroup label="マスコットキャラクター">${mascotOptions}</optgroup>` +
+    '<optgroup label="マスコットキャラクター"><option value="affiliation:mascot">マスコットキャラクター</option></optgroup>' +
     `<optgroup label="その他・種類">${otherOptions}</optgroup>`;
 }
 
@@ -159,9 +154,9 @@ function render() {
     if (characterFilter) {
       const [type, ...rest] = characterFilter.split(':');
       const value = rest.join(':');
-      characterHit = type==='character' ? (p.characterId===value || p.relatedCharacterId===value)
+      characterHit = type==='character' ? p.characterId===value
         : type==='princeCat' ? p.princeCatId===value
-        : type==='mascot' ? p.mascotId===value
+        : type==='affiliation' ? p.affiliation===value
         : type==='variant' ? p.variant===value
         : true;
     }

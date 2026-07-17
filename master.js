@@ -1,5 +1,5 @@
 // GRAND SHOP 商品マスター
-// 表記ゆれ・所属・PRINCE CAT・マスコットの関係は、このファイルだけで管理します。
+// 表記ゆれ・所属・PRINCE CAT・マスコット分類は、このファイルだけで管理します。
 const PRODUCT_MASTER = {
   units: [
     {
@@ -65,27 +65,9 @@ const PRODUCT_MASTER = {
   ],
 
   mascots: [
-    {
-      id:'onpukun',
-      name:'おんぷくん',
-      aliases:['おんぷ君'],
-      relatedCharacterId:'otoya',
-      relation:'一十木音也が作ったキャラクター'
-    },
-    {
-      id:'piyochan',
-      name:'ピヨちゃん',
-      aliases:['ピヨチャン'],
-      relatedCharacterId:'natsuki',
-      relation:'四ノ宮那月が好きなキャラクター'
-    },
-    {
-      id:'penguin',
-      name:'ペンギン',
-      aliases:['トキペン'],
-      relatedCharacterId:'tokiya',
-      relation:'一ノ瀬トキヤが作ったキャラクター'
-    }
+    { id:'onpukun', name:'おんぷくん', aliases:['おんぷ君'] },
+    { id:'piyochan', name:'ピヨちゃん', aliases:['ピヨチャン'] },
+    { id:'penguin', name:'ペンギン', aliases:['トキペン'] }
   ],
 
   unitVariants: {
@@ -127,14 +109,7 @@ const MASTER_INDEX = (() => {
   const mascots = new Map();
   const mascotAliases = new Map();
   PRODUCT_MASTER.mascots.forEach(mascot => {
-    const relatedCharacter = characters.get(mascot.relatedCharacterId) || null;
-    const info = {
-      ...mascot,
-      relatedCharacterId: relatedCharacter?.id || null,
-      relatedCharacter: relatedCharacter?.name || null,
-      relatedUnitId: relatedCharacter?.unitId || null,
-      relatedUnit: relatedCharacter?.unit || null
-    };
+    const info = { ...mascot };
     mascots.set(mascot.id, info);
     [mascot.name, ...(mascot.aliases || [])].forEach(alias => mascotAliases.set(normalizeMasterName(alias), info));
   });
@@ -165,10 +140,6 @@ function enrichProduct(product) {
   if (princeCatInfo) characterInfo = MASTER_INDEX.characters.get(princeCatInfo.characterId);
   if (characterInfo) unitInfo = MASTER_INDEX.units.get(characterInfo.unitId);
 
-  const relatedCharacterInfo = mascotInfo?.relatedCharacterId
-    ? MASTER_INDEX.characters.get(mascotInfo.relatedCharacterId)
-    : null;
-
   const variantUnitId = PRODUCT_MASTER.unitVariants[product.variant];
   if (!unitInfo && variantUnitId) unitInfo = MASTER_INDEX.units.get(variantUnitId);
 
@@ -180,11 +151,7 @@ function enrichProduct(product) {
     princeCatInfo?.name,
     mascotInfo?.name,
     ...(mascotInfo?.aliases || []),
-    mascotInfo?.relation,
-    relatedCharacterInfo?.name,
-    relatedCharacterInfo?.shortName,
-    ...(relatedCharacterInfo?.aliases || []),
-    relatedCharacterInfo?.unit
+    mascotInfo ? 'マスコットキャラクター' : null
   ].filter(Boolean));
 
   return {
@@ -197,9 +164,6 @@ function enrichProduct(product) {
     princeCat: princeCatInfo?.name || null,
     mascotId: mascotInfo?.id || null,
     mascot: mascotInfo?.name || null,
-    relatedCharacterId: relatedCharacterInfo?.id || null,
-    relatedCharacter: relatedCharacterInfo?.name || null,
-    mascotRelation: mascotInfo?.relation || null,
     affiliation: princeCatInfo ? 'prince-cat' : mascotInfo ? 'mascot' : characterInfo || unitInfo ? 'idol' : 'other',
     searchText: [...searchTerms].join(' ').toLowerCase()
   };
