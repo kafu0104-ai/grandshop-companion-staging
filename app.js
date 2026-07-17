@@ -65,25 +65,33 @@ function setupFilters() {
   const months=[...new Set(products.map(p=>p.releaseMonth).filter(Boolean))].sort();
   document.getElementById('month').innerHTML='<option value="">全年月</option>'+months.map(x=>`<option value="${x}">${x.replace('-', '年')}月</option>`).join('');
 
+  document.getElementById('unit').innerHTML =
+    '<option value="">全所属</option>' +
+    PRODUCT_MASTER.units.map(unit => `<option value="unit:${unit.id}">${unit.name}</option>`).join('') +
+    '<option value="affiliation:prince-cat">PRINCE CAT</option>' +
+    '<option value="affiliation:mascot">マスコットキャラクター</option>';
+
   const unitGroups = PRODUCT_MASTER.units.map(unit => {
     const options = unit.characters.map(character =>
-      `<option value="character:${character}">${character}</option>`
+      `<option value="character:${character.id}">${character.name}</option>`
     ).join('');
     return `<optgroup label="${unit.name}">${options}</optgroup>`;
   }).join('');
 
-  const catOptions = PRODUCT_MASTER.princeCats.map(cat =>
-    `<option value="princeCat:${cat.name}">${cat.name}（${cat.character}）</option>`
-  ).join('');
+  const catOptions = PRODUCT_MASTER.princeCats.map(cat => {
+    const info = MASTER_INDEX.princeCats.get(cat.id);
+    return `<option value="princeCat:${cat.id}">${cat.name}（${info.character}）</option>`;
+  }).join('');
 
-  const mascotOptions = PRODUCT_MASTER.mascots.map(name =>
-    `<option value="mascot:${name}">${name}</option>`
-  ).join('');
+  const mascotOptions = PRODUCT_MASTER.mascots.map(mascot => {
+    const info = MASTER_INDEX.mascots.get(mascot.id);
+    return `<option value="mascot:${mascot.id}">${mascot.name}（${info.relatedCharacter}）</option>`;
+  }).join('');
 
   const reserved = new Set([
-    ...PRODUCT_MASTER.units.flatMap(unit => unit.characters.map(normalizeMasterName)),
+    ...PRODUCT_MASTER.units.flatMap(unit => unit.characters.flatMap(character => [character.name, character.shortName, ...(character.aliases || [])].map(normalizeMasterName))),
     ...PRODUCT_MASTER.princeCats.map(cat => normalizeMasterName(cat.name)),
-    ...PRODUCT_MASTER.mascots.map(normalizeMasterName)
+    ...PRODUCT_MASTER.mascots.flatMap(mascot => [mascot.name, ...(mascot.aliases || [])].map(normalizeMasterName))
   ]);
   const otherVariants = [...new Set(products.map(p=>p.variant).filter(Boolean))]
     .filter(value => !reserved.has(normalizeMasterName(value)))
@@ -125,26 +133,33 @@ function render() {
   renderTabs();
   const q=document.getElementById('search').value.toLowerCase();
   const month=document.getElementById('month').value;
+  const unitFilter=document.getElementById('unit').value;
   const characterFilter=document.getElementById('character').value;
   const category=document.getElementById('category').value;
   const selected=document.getElementById('selected').value;
 
   const visible=products.filter(p=>{
     const n=getQty(p.id);
-    const searchable = [p.name,p.variant,p.code,p.unit,p.character,p.princeCat,p.mascot].filter(Boolean).join(' ').toLowerCase();
-    const hit=searchable.includes(q);
+    const hit=p.searchText.includes(q);
+    let unitHit=true;
+    if (unitFilter) {
+      const [type, value] = unitFilter.split(':');
+      unitHit = type==='unit' ? p.unitId===value
+        : type==='affiliation' ? p.affiliation===value
+        : true;
+    }
     let characterHit=true;
     if (characterFilter) {
       const [type, ...rest] = characterFilter.split(':');
       const value = rest.join(':');
-      characterHit = type==='character' ? p.character===value
-        : type==='princeCat' ? p.princeCat===value
-        : type==='mascot' ? p.mascot===value
+      characterHit = type==='character' ? (p.characterId===value || p.relatedCharacterId===value)
+        : type==='princeCat' ? p.princeCatId===value
+        : type==='mascot' ? p.mascotId===value
         : type==='variant' ? p.variant===value
         : true;
     }
     const categoryHit=!category || (category==='__random__' ? p.random : (!p.random && p.category===category));
-    return hit && (!month||p.releaseMonth===month) && characterHit && categoryHit
+    return hit && (!month||p.releaseMonth===month) && unitHit && characterHit && categoryHit
       && (!selected||(selected==='selected'?n>0:n===0));
   });
 
@@ -229,7 +244,7 @@ function updateBonus() {
 }
 
 ['search'].forEach(id=>document.getElementById(id).addEventListener('input',render));
-['month','character','category','selected'].forEach(id=>document.getElementById(id).addEventListener('change',render));
+['month','unit','character','category','selected'].forEach(id=>document.getElementById(id).addEventListener('change',render));
 
 [
   ['yukata','yukata'],

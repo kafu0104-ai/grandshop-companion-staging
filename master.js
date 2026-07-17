@@ -1,114 +1,206 @@
-// キャラクター・所属・PRINCE CAT・マスコットのマスターデータ
+// GRAND SHOP 商品マスター
+// 表記ゆれ・所属・PRINCE CAT・マスコットの関係は、このファイルだけで管理します。
 const PRODUCT_MASTER = {
   units: [
     {
       id: 'starish',
       name: 'ST☆RISH',
-      characters: ['一十木音也','聖川真斗','四ノ宮那月','一ノ瀬トキヤ','神宮寺レン','来栖翔','愛島セシル']
+      aliases: ['ST☆RISH', 'STARISH', 'スターリッシュ', 'シャイニング'],
+      characters: [
+        { id:'otoya', name:'一十木音也', shortName:'音也', aliases:['一十木 音也'] },
+        { id:'masato', name:'聖川真斗', shortName:'真斗', aliases:['聖川 真斗'] },
+        { id:'natsuki', name:'四ノ宮那月', shortName:'那月', aliases:['四ノ宮 那月'] },
+        { id:'tokiya', name:'一ノ瀬トキヤ', shortName:'トキヤ', aliases:['一ノ瀬 トキヤ'] },
+        { id:'ren', name:'神宮寺レン', shortName:'レン', aliases:['神宮寺 レン'] },
+        { id:'sho', name:'来栖 翔', shortName:'翔', aliases:['来栖翔'] },
+        { id:'cecil', name:'愛島セシル', shortName:'セシル', aliases:['愛島 セシル'] }
+      ]
     },
     {
       id: 'quartet-night',
       name: 'QUARTET NIGHT',
-      characters: ['寿嶺二','黒崎蘭丸','美風藍','カミュ']
+      aliases: ['QUARTET NIGHT', 'カルテットナイト', 'カルナイ', 'シャイニング'],
+      characters: [
+        { id:'reiji', name:'寿 嶺二', shortName:'嶺二', aliases:['寿嶺二'] },
+        { id:'ranmaru', name:'黒崎蘭丸', shortName:'蘭丸', aliases:['黒崎 蘭丸'] },
+        { id:'ai', name:'美風 藍', shortName:'藍', aliases:['美風藍'] },
+        { id:'camus', name:'カミュ', shortName:'カミュ', aliases:[] }
+      ]
     },
     {
       id: 'heavens',
       name: 'HE★VENS',
-      characters: ['鳳瑛一','皇綺羅','帝ナギ','鳳瑛二','桐生院ヴァン','日向大和','天草シオン']
+      aliases: ['HE★VENS', 'HEAVENS', 'ヘヴンズ', 'ヘブンズ', 'レイジング'],
+      characters: [
+        { id:'eiichi', name:'鳳 瑛一', shortName:'瑛一', aliases:['鳳瑛一'] },
+        { id:'kira', name:'皇 綺羅', shortName:'綺羅', aliases:['皇綺羅'] },
+        { id:'nagi', name:'帝 ナギ', shortName:'ナギ', aliases:['帝ナギ'] },
+        { id:'eiji', name:'鳳 瑛二', shortName:'瑛二', aliases:['鳳瑛二'] },
+        { id:'van', name:'桐生院ヴァン', shortName:'ヴァン', aliases:['桐生院 ヴァン'] },
+        { id:'yamato', name:'日向大和', shortName:'大和', aliases:['日向 大和'] },
+        { id:'shion', name:'天草シオン', shortName:'シオン', aliases:['天草 シオン'] }
+      ]
     }
   ],
 
   princeCats: [
-    { name:'ロッソ', character:'一十木音也', unit:'ST☆RISH' },
-    { name:'シエロ', character:'聖川真斗', unit:'ST☆RISH' },
-    { name:'シトロン', character:'四ノ宮那月', unit:'ST☆RISH' },
-    { name:'アイリス', character:'一ノ瀬トキヤ', unit:'ST☆RISH' },
-    { name:'アランチャ', character:'神宮寺レン', unit:'ST☆RISH' },
-    { name:'ロージー', character:'来栖翔', unit:'ST☆RISH' },
-    { name:'ライム', character:'愛島セシル', unit:'ST☆RISH' },
-
-    { name:'ヴェルデ', character:'寿嶺二', unit:'QUARTET NIGHT' },
-    { name:'グラナータ', character:'黒崎蘭丸', unit:'QUARTET NIGHT' },
-    { name:'リラ', character:'美風藍', unit:'QUARTET NIGHT' },
-    { name:'アクア', character:'カミュ', unit:'QUARTET NIGHT' },
-
-    { name:'ルビーノ', character:'鳳瑛一', unit:'HE★VENS' },
-    { name:'ラピス', character:'皇綺羅', unit:'HE★VENS' },
-    { name:'ルチル', character:'帝ナギ', unit:'HE★VENS' },
-    { name:'アメジス', character:'鳳瑛二', unit:'HE★VENS' },
-    { name:'カネリア', character:'桐生院ヴァン', unit:'HE★VENS' },
-    { name:'パラチア', character:'日向大和', unit:'HE★VENS' },
-    { name:'ペリド', character:'天草シオン', unit:'HE★VENS' }
+    { id:'rosso', name:'ロッソ', characterId:'otoya' },
+    { id:'cielo', name:'シエロ', characterId:'masato' },
+    { id:'citron', name:'シトロン', characterId:'natsuki' },
+    { id:'iris', name:'アイリス', characterId:'tokiya' },
+    { id:'arancia', name:'アランチャ', characterId:'ren' },
+    { id:'rosie', name:'ロージー', characterId:'sho' },
+    { id:'lime', name:'ライム', characterId:'cecil' },
+    { id:'verde', name:'ヴェルデ', characterId:'reiji' },
+    { id:'granata', name:'グラナータ', characterId:'ranmaru' },
+    { id:'lilla', name:'リラ', characterId:'ai' },
+    { id:'acqua', name:'アクア', characterId:'camus' },
+    { id:'rubino', name:'ルビーノ', characterId:'eiichi' },
+    { id:'lapis', name:'ラピス', characterId:'kira' },
+    { id:'rutile', name:'ルチル', characterId:'nagi' },
+    { id:'amethyst', name:'アメジス', characterId:'eiji' },
+    { id:'carnelian', name:'カネリア', characterId:'van' },
+    { id:'paratia', name:'パラチア', characterId:'yamato' },
+    { id:'peridot', name:'ペリド', characterId:'shion' }
   ],
 
-  mascots: ['おんぷくん','トキペン','ピヨちゃん'],
+  mascots: [
+    {
+      id:'onpukun',
+      name:'おんぷくん',
+      aliases:['おんぷ君'],
+      relatedCharacterId:'otoya',
+      relation:'一十木音也が作ったキャラクター'
+    },
+    {
+      id:'piyochan',
+      name:'ピヨちゃん',
+      aliases:['ピヨチャン'],
+      relatedCharacterId:'natsuki',
+      relation:'四ノ宮那月が好きなキャラクター'
+    },
+    {
+      id:'penguin',
+      name:'ペンギン',
+      aliases:['トキペン'],
+      relatedCharacterId:'tokiya',
+      relation:'一ノ瀬トキヤが作ったキャラクター'
+    }
+  ],
 
   unitVariants: {
-    '夏の星': 'ST☆RISH',
-    '夏の夜': 'QUARTET NIGHT'
+    '夏の星': 'starish',
+    '夏の夜': 'quartet-night'
   }
 };
 
-const normalizeMasterName = value => String(value || '').replace(/[\s　]+/g, '');
+const normalizeMasterName = value => String(value || '')
+  .normalize('NFKC')
+  .toLowerCase()
+  .replace(/[\s　・★☆]/g, '');
 
-const CHARACTER_LOOKUP = new Map();
-PRODUCT_MASTER.units.forEach(unit => {
-  unit.characters.forEach(character => {
-    CHARACTER_LOOKUP.set(normalizeMasterName(character), {
-      character,
-      unit: unit.name
+const MASTER_INDEX = (() => {
+  const units = new Map();
+  const characters = new Map();
+  const characterAliases = new Map();
+
+  PRODUCT_MASTER.units.forEach(unit => {
+    units.set(unit.id, unit);
+    unit.characters.forEach(character => {
+      const info = { ...character, unitId:unit.id, unit:unit.name };
+      characters.set(character.id, info);
+      [character.name, character.shortName, ...(character.aliases || [])].forEach(alias => {
+        characterAliases.set(normalizeMasterName(alias), info);
+      });
     });
   });
-});
 
-const PRINCE_CAT_LOOKUP = new Map(
-  PRODUCT_MASTER.princeCats.map(cat => [normalizeMasterName(cat.name), cat])
-);
+  const princeCats = new Map();
+  const princeCatAliases = new Map();
+  PRODUCT_MASTER.princeCats.forEach(cat => {
+    const character = characters.get(cat.characterId);
+    const info = { ...cat, character:character.name, characterId:character.id, unit:character.unit, unitId:character.unitId };
+    princeCats.set(cat.id, info);
+    princeCatAliases.set(normalizeMasterName(cat.name), info);
+  });
+
+  const mascots = new Map();
+  const mascotAliases = new Map();
+  PRODUCT_MASTER.mascots.forEach(mascot => {
+    const relatedCharacter = characters.get(mascot.relatedCharacterId) || null;
+    const info = {
+      ...mascot,
+      relatedCharacterId: relatedCharacter?.id || null,
+      relatedCharacter: relatedCharacter?.name || null,
+      relatedUnitId: relatedCharacter?.unitId || null,
+      relatedUnit: relatedCharacter?.unit || null
+    };
+    mascots.set(mascot.id, info);
+    [mascot.name, ...(mascot.aliases || [])].forEach(alias => mascotAliases.set(normalizeMasterName(alias), info));
+  });
+
+  return { units, characters, characterAliases, princeCats, princeCatAliases, mascots, mascotAliases };
+})();
+
+function findContained(map, normalizedText) {
+  for (const [key, value] of map.entries()) {
+    if (key && normalizedText.includes(key)) return value;
+  }
+  return null;
+}
 
 function enrichProduct(product) {
-  const variantKey = normalizeMasterName(product.variant);
-  const fullText = `${product.name || ''} ${product.variant || ''}`;
-  const fullTextKey = normalizeMasterName(fullText);
+  const normalizedVariant = normalizeMasterName(product.variant);
+  const normalizedText = normalizeMasterName(`${product.name || ''} ${product.variant || ''}`);
 
-  let character = null;
-  let unit = PRODUCT_MASTER.unitVariants[product.variant] || null;
-  let princeCat = null;
-  let mascot = null;
+  let unitInfo = null;
+  let characterInfo = MASTER_INDEX.characterAliases.get(normalizedVariant) || null;
+  let princeCatInfo = MASTER_INDEX.princeCatAliases.get(normalizedVariant) || null;
+  let mascotInfo = MASTER_INDEX.mascotAliases.get(normalizedVariant) || null;
 
-  const characterInfo = CHARACTER_LOOKUP.get(variantKey);
-  if (characterInfo) {
-    character = characterInfo.character;
-    unit = characterInfo.unit;
-  }
+  if (!characterInfo) characterInfo = findContained(MASTER_INDEX.characterAliases, normalizedText);
+  if (!princeCatInfo) princeCatInfo = findContained(MASTER_INDEX.princeCatAliases, normalizedText);
+  if (!mascotInfo) mascotInfo = findContained(MASTER_INDEX.mascotAliases, normalizedText);
 
-  const catInfo = PRINCE_CAT_LOOKUP.get(variantKey);
-  if (catInfo) {
-    princeCat = catInfo.name;
-    character = catInfo.character;
-    unit = catInfo.unit;
-  }
+  if (princeCatInfo) characterInfo = MASTER_INDEX.characters.get(princeCatInfo.characterId);
+  if (characterInfo) unitInfo = MASTER_INDEX.units.get(characterInfo.unitId);
 
-  // 商品名にPRINCE CAT名が含まれる商品にも対応
-  if (!princeCat) {
-    const matchedCat = PRODUCT_MASTER.princeCats.find(cat =>
-      fullTextKey.includes(normalizeMasterName(cat.name))
-    );
-    if (matchedCat) {
-      princeCat = matchedCat.name;
-      character = matchedCat.character;
-      unit = matchedCat.unit;
-    }
-  }
+  const relatedCharacterInfo = mascotInfo?.relatedCharacterId
+    ? MASTER_INDEX.characters.get(mascotInfo.relatedCharacterId)
+    : null;
 
-  mascot = PRODUCT_MASTER.mascots.find(name =>
-    fullTextKey.includes(normalizeMasterName(name))
-  ) || null;
+  const variantUnitId = PRODUCT_MASTER.unitVariants[product.variant];
+  if (!unitInfo && variantUnitId) unitInfo = MASTER_INDEX.units.get(variantUnitId);
+
+  const searchTerms = new Set([
+    product.name, product.variant, product.code,
+    unitInfo?.name,
+    characterInfo?.name, characterInfo?.shortName,
+    ...(characterInfo?.aliases || []),
+    princeCatInfo?.name,
+    mascotInfo?.name,
+    ...(mascotInfo?.aliases || []),
+    mascotInfo?.relation,
+    relatedCharacterInfo?.name,
+    relatedCharacterInfo?.shortName,
+    ...(relatedCharacterInfo?.aliases || []),
+    relatedCharacterInfo?.unit
+  ].filter(Boolean));
 
   return {
     ...product,
-    unit,
-    character,
-    princeCat,
-    mascot
+    unitId: unitInfo?.id || null,
+    unit: unitInfo?.name || null,
+    characterId: characterInfo?.id || null,
+    character: characterInfo?.name || null,
+    princeCatId: princeCatInfo?.id || null,
+    princeCat: princeCatInfo?.name || null,
+    mascotId: mascotInfo?.id || null,
+    mascot: mascotInfo?.name || null,
+    relatedCharacterId: relatedCharacterInfo?.id || null,
+    relatedCharacter: relatedCharacterInfo?.name || null,
+    mascotRelation: mascotInfo?.relation || null,
+    affiliation: princeCatInfo ? 'prince-cat' : mascotInfo ? 'mascot' : characterInfo || unitInfo ? 'idol' : 'other',
+    searchText: [...searchTerms].join(' ').toLowerCase()
   };
 }

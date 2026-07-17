@@ -19,7 +19,7 @@ h1{font-size:18px;margin:0 0 10px}
 .summary b{display:block;margin-top:2px;font-size:16px;color:var(--accent)}
 .controls{padding:10px 12px;display:grid;gap:8px}
 .controls input,.controls select{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff}
-.filters{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.filters{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
 .bonus{margin:0 12px 12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}
 .bonus h2{font-size:15px;margin:0 0 8px}
 .bonusgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
@@ -127,6 +127,7 @@ dialog::backdrop{background:rgba(30,24,36,.38)}
   <input id="search" placeholder="商品名・キャラクター名を検索">
   <div class="filters">
     <select id="month"><option value="">全年月</option></select>
+    <select id="unit"><option value="">全所属</option></select>
     <select id="character"><option value="">全キャラクター・種類</option></select>
     <select id="category"><option value="">全カテゴリ</option></select>
     <select id="selected">
