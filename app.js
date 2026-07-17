@@ -65,6 +65,13 @@ function setupFilters() {
   const months=[...new Set(products.map(p=>p.releaseMonth).filter(Boolean))].sort();
   document.getElementById('month').innerHTML='<option value="">全年月</option>'+months.map(x=>`<option value="${x}">${x.replace('-', '年')}月</option>`).join('');
 
+  const categories=[...new Set(products.map(p=>p.category).filter(Boolean))]
+    .sort((a,b)=>a.localeCompare(b,'ja'));
+  document.getElementById('category').innerHTML =
+    '<option value="">全カテゴリ</option>' +
+    '<option value="__random__">トレーディング</option>' +
+    categories.map(category => `<option value="${category}">${category}</option>`).join('');
+
   document.getElementById('unit').innerHTML =
     '<option value="">全所属</option>' +
     PRODUCT_MASTER.units.map(unit => `<option value="unit:${unit.id}">${unit.name}</option>`).join('') +
