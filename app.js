@@ -7,7 +7,8 @@ const defaultApp = {
   purchasers: [{id:'me', name:'わたし'}],
   activePurchaserId: 'me',
   quantities: {me:{}},
-  bonusByPurchaser: {me:{yukata:0,shining:0,raging:0}}
+  bonusByPurchaser: {me:{yukata:0,shining:0,raging:0}},
+  purchasedByPurchaser: {me:{}}
 };
 
 let app;
@@ -27,6 +28,12 @@ if (!app || !Array.isArray(app.purchasers)) {
 }
 app.quantities ||= {};
 app.bonusByPurchaser ||= {};
+app.purchasedByPurchaser ||= {};
+app.purchasers.forEach(p=>{
+  app.quantities[p.id] ||= {};
+  app.bonusByPurchaser[p.id] ||= {yukata:0,shining:0,raging:0};
+  app.purchasedByPurchaser[p.id] ||= {};
+});
 app.activePurchaserId ||= 'me';
 
 const yen = n => '¥' + Number(n||0).toLocaleString('ja-JP');
@@ -34,6 +41,7 @@ const isAll = () => app.activePurchaserId === 'all';
 const activeBuyer = () => app.purchasers.find(p=>p.id===app.activePurchaserId);
 const buyerQtys = id => app.quantities[id] ||= {};
 const buyerBonus = id => app.bonusByPurchaser[id] ||= {yukata:0,shining:0,raging:0};
+const buyerPurchased = id => app.purchasedByPurchaser[id] ||= {};
 
 function saveApp(){
   try { localStorage.setItem(APP_KEY, JSON.stringify(app)); } catch(e) {}
@@ -44,6 +52,12 @@ function getQty(id, purchaserId=app.activePurchaserId){
     return app.purchasers.reduce((sum,p)=>sum+Number((app.quantities[p.id]||{})[id]||0),0);
   }
   return Number((app.quantities[purchaserId]||{})[id]||0);
+}
+function getPurchased(id,purchaserId=app.activePurchaserId){
+  if (purchaserId === 'all') {
+    return app.purchasers.length > 0 && app.purchasers.every(p=>!!(app.purchasedByPurchaser[p.id]||{})[id]);
+  }
+  return !!(app.purchasedByPurchaser[purchaserId]||{})[id];
 }
 function total(purchaserId=app.activePurchaserId){
   return products.reduce((s,p)=>s+getQty(p.id,purchaserId)*p.price,0);
@@ -142,6 +156,7 @@ function render() {
 
   const visible=products.filter(p=>{
     const n=getQty(p.id);
+    const purchased=getPurchased(p.id);
     const hit=p.searchText.includes(q);
     let unitHit=true;
     if (unitFilter) {
@@ -161,12 +176,17 @@ function render() {
         : true;
     }
     const categoryHit=!category || (category==='__random__' ? p.random : (!p.random && p.category===category));
-    return hit && (!month||p.releaseMonth===month) && unitHit && characterHit && categoryHit
-      && (!selected||(selected==='selected'?n>0:n===0));
+    const selectedHit = !selected
+      || (selected==='selected' && n>0)
+      || (selected==='unselected' && n===0)
+      || (selected==='unpurchased' && n>0 && !purchased)
+      || (selected==='purchased' && purchased);
+    return hit && (!month||p.releaseMonth===month) && unitHit && characterHit && categoryHit && selectedHit;
   });
 
   document.getElementById('list').innerHTML=visible.map(p=>{
     const n=getQty(p.id);
+    const purchased=getPurchased(p.id);
     const limitNote=p.limit?`購入制限 ${p.limit}個`:'';
     const qtyControl = isAll()
       ? `<div class="qty aggregate"><button disabled>−</button><input value="${n}" readonly aria-label="全体数量"><button disabled>＋</button></div>`
@@ -175,7 +195,12 @@ function render() {
           <input type="number" min="0" max="${p.limit||999}" value="${n}" onchange="setQty('${p.id}',this.value,${p.limit||999})">
           <button onclick="changeQty('${p.id}',1,${p.limit||999})">＋</button>
         </div>`;
-    return `<article class="item ${n>0?'active':''}">
+    const purchaseControl = isAll()
+      ? ''
+      : `<button type="button" class="purchase-check ${purchased?'checked':''}" onclick="togglePurchased('${p.id}')">
+          ${purchased?'購入済み':'未購入'}
+        </button>`;
+    return `<article class="item ${n>0?'active':''} ${purchased?'purchased':''}">
       <div class="thumb"><img loading="lazy" src="${p.image}" alt=""></div>
       <div>
         <div class="name">${p.name}</div>
@@ -185,6 +210,7 @@ function render() {
         ${p.random?'<span class="random-badge">トレーディング</span>':''}
       </div>
       ${qtyControl}
+      ${purchaseControl}
     </article>`;
   }).join('');
 
@@ -216,6 +242,13 @@ function setQty(id,value,limit=999) {
 }
 function changeQty(id,d,limit=999) {
   setQty(id,getQty(id)+d,limit);
+}
+function togglePurchased(id){
+  if(isAll()) return;
+  const purchased=buyerPurchased(app.activePurchaserId);
+  purchased[id]=!purchased[id];
+  saveApp();
+  render();
 }
 
 function currentBonus(){
@@ -274,6 +307,7 @@ document.getElementById('purchaserForm').addEventListener('submit',e=>{
   app.purchasers.push({id,name});
   app.quantities[id]={};
   app.bonusByPurchaser[id]={yukata:0,shining:0,raging:0};
+  app.purchasedByPurchaser[id]={};
   app.activePurchaserId=id;
   saveApp();
   document.getElementById('purchaserDialog').close();
@@ -298,7 +332,9 @@ function renderManage(){
     const p=app.purchasers.find(x=>x.id===btn.dataset.delete);
     if(!p || !confirm(`${p.name}さんの数量データも削除しますか？`)) return;
     app.purchasers=app.purchasers.filter(x=>x.id!==p.id);
-    delete app.quantities[p.id]; delete app.bonusByPurchaser[p.id];
+    delete app.quantities[p.id];
+    delete app.bonusByPurchaser[p.id];
+    delete app.purchasedByPurchaser[p.id];
     if(app.activePurchaserId===p.id) app.activePurchaserId='all';
     saveApp();renderManage();syncBonusInputs();render();
   });
