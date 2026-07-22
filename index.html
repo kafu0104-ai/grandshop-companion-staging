@@ -67,6 +67,63 @@ h1{font-size:18px;margin:0 0 10px}
   color:#fff;
   font-size:14px;
 }
+
+.item.soldout{
+  background:#f3f3f3;
+  border-color:#d3d3d3;
+}
+.item.soldout .thumb,
+.item.soldout .name,
+.item.soldout .variant,
+.item.soldout .meta,
+.item.soldout .price,
+.item.soldout .random-badge{
+  opacity:.45;
+}
+.item.soldout .qty button,
+.item.soldout .qty input{
+  opacity:.45;
+  pointer-events:none;
+}
+.item-actions{
+  grid-column:1/-1;
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:14px;
+}
+.soldout-check{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+  padding:2px 0 0;
+}
+.soldout-check::before{
+  content:"";
+  width:20px;
+  height:20px;
+  border:2px solid var(--line);
+  border-radius:6px;
+  background:#fff;
+}
+.soldout-check.checked{
+  color:var(--danger);
+}
+.soldout-check.checked::before{
+  content:"×";
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-color:var(--danger);
+  background:var(--danger);
+  color:#fff;
+  font-size:15px;
+}
 .thumb{width:76px;height:76px;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#fff}
 .thumb img{width:100%;height:100%;object-fit:contain}
 .name{font-size:13px;font-weight:700;line-height:1.4}
@@ -174,6 +231,8 @@ dialog::backdrop{background:rgba(30,24,36,.38)}
       <option value="unselected">未入力</option>
       <option value="unpurchased">未購入のみ</option>
       <option value="purchased">購入済みのみ</option>
+      <option value="available">販売中のみ</option>
+      <option value="soldout">売り切れのみ</option>
     </select>
   </div>
 </section>
